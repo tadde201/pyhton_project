@@ -1,0 +1,41 @@
+Region,Make,Battery_Capacity_kWh
+Asia,Audi,5321.8
+Asia,BMW,6032.4
+Asia,Chevrolet,5648.7
+Asia,Ford,6622.8
+Asia,Hyundai,6761.8
+Asia,Kia,4999.3
+Asia,Mercedes,4771.3
+Asia,Nissan,5888.2
+Asia,Tesla,4690.2
+Asia,Volkswagen,4633.4
+Australia,Tesla,5407.4
+Australia,Nissan,6120.1
+Australia,Mercedes,5757.1
+Australia,Kia,5074.5
+Australia,Volkswagen,5975.7
+Australia,Ford,6863.3
+Australia,Chevrolet,5737.5
+Australia,BMW,5641.7
+Australia,Audi,5996.3
+Australia,Hyundai,5570.1
+Europe,Volkswagen,5605.7
+Europe,Tesla,5308.2
+Europe,Mercedes,5592.7
+Europe,Kia,4681.3
+Europe,Nissan,3968.6
+Europe,Ford,5408.5
+Europe,Chevrolet,6429.2
+Europe,BMW,6901.9
+Europe,Audi,5544.9
+Europe,Hyundai,4958.3
+North America,Tesla,5802.3
+North America,Audi,4955.0
+North America,BMW,5556.6
+North America,Chevrolet,5247.8
+North America,Ford,5659.1
+North America,Hyundai,5305.8
+North America,Kia,6028.1
+North America,Mercedes,6076.1
+North America,Nissan,5902.1
+North America,Volkswagen,5984.5
