@@ -16,6 +16,9 @@ VALUES
   (2, 'mike', 'jordan'),
   (3, 'john', 'doe');
   select * from test
+  UPDATE test
+  SET Name='Getawu'
+  WHERE id=3
 
 
 /****** Script for SelectTopNRows command from SSMS  ******/
