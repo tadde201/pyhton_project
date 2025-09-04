@@ -1,16 +1,23 @@
+-- Delete duplicate data from the table
+USE [project1];
 
+-- Check current data
+SELECT * 
+FROM station2;
 
---this for deleted duplicate data from the table 
-use [project1]
-select * from station2
-delete from station2
-where id in(
-select id
-from(
-select *
-from(
- select id,count(*) as nu
-from station2 
-group by id)as r
-where r.nu>1) as r2 
+-- Delete duplicates
+DELETE FROM station2
+WHERE id IN (
+    SELECT id
+    FROM (
+        SELECT id
+        FROM (
+            SELECT id, COUNT(*) AS nu
+            FROM station2
+            GROUP BY id
+        ) AS r
+        WHERE r.nu > 1
+    ) AS r2
+);
+
 )
