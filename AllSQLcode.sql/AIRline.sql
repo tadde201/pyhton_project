@@ -1,45 +1,77 @@
-select * from ari_enterprice.facility_system_mapping_old_new
-where site='ZAB'
-select
-select * from ari_enterprice.system_selected_tableau
-Create view Selectedtruth0 as 
-select 
-  system ,t.Truth,t.false
-   from
-   (select  system,
-    sum(case  when selected='true' then 2 else 0 end)as Truth,
-     sum(case when selected='false' then 1 else 0 end) as false
-     from ari_enterprice.system_selected_tableau 
-     group by system ) as t  
-	where t.Truth=0
-	group by system,t.Truth,t.false
---check view 
-Select * from Selectedtruth0
----Check  no false 
-Create view Selectedtruthfalse0 as 
-select 
-  system ,t.Truth,t.false
-   from
-   (select  system,
-    sum(case  when selected='true' then 2 else 0 end)as Truth,
-     sum(case when selected='false' then 1 else 0 end) as false
-     from ari_enterprice.system_selected_tableau 
-     group by system ) as t  
-	where t.false=0
-	group by system,t.Truth,t.false
--- check views 
-select * from Selectedtruthfalse0 
+-- Check facility-system mapping
+SELECT * 
+FROM ari_enterprice.facility_system_mapping_old_new
+WHERE site = 'ZAB';
 
+-- Check system selected in Tableau
+SELECT * 
+FROM ari_enterprice.system_selected_tableau;
+
+-----------------------------------------------------
+-- Create view for systems with no "true" selected
+-----------------------------------------------------
+CREATE VIEW Selectedtruth0 AS
+SELECT 
+    system,
+    t.Truth,
+    t.False
+FROM (
+    SELECT  
+        system,
+        SUM(CASE WHEN selected = 'true' THEN 2 ELSE 0 END) AS Truth,
+        SUM(CASE WHEN selected = 'false' THEN 1 ELSE 0 END) AS False
+    FROM ari_enterprice.system_selected_tableau 
+    GROUP BY system
+) AS t  
+WHERE t.Truth = 0
+GROUP BY system, t.Truth, t.False;
+
+-- Check view
+SELECT * 
+FROM Selectedtruth0;
+
+-----------------------------------------------------
+-- Create view for systems with no "false" selected
+-----------------------------------------------------
+CREATE VIEW Selectedtruthfalse0 AS
+SELECT 
+    system,
+    t.Truth,
+    t.False
+FROM (
+    SELECT  
+        system,
+        SUM(CASE WHEN selected = 'true' THEN 2 ELSE 0 END) AS Truth,
+        SUM(CASE WHEN selected = 'false' THEN 1 ELSE 0 END) AS False
+    FROM ari_enterprice.system_selected_tableau 
+    GROUP BY system
+) AS t  
+WHERE t.False = 0
+GROUP BY system, t.Truth, t.False;
+
+-- Check view
+SELECT * 
+FROM Selectedtruthfalse0;
+
+-----------------------------------------------------
+-- Critical count by model
+-----------------------------------------------------
 SELECT 
     model,
-    SUM(CASE WHEN x_axis = 'Critical' THEN 1 ELSE 0 END) AS x_crtical,
+    SUM(CASE WHEN x_axis = 'Critical' THEN 1 ELSE 0 END) AS x_Critical,
     SUM(CASE WHEN y_axis = 'Critical' THEN 1 ELSE 0 END) AS y_Critical
 FROM ari_enterprice.weight_all_models
 GROUP BY model;
-  
-  select model,y_axis, x_axis,count(y_axis) as num  from  ari_enterprice.weight_all_models
-   where y_axis='Critical'
-   and  x_axis='Critical'
-    group by model, y_axis, x_axis
-  
-  
+
+-----------------------------------------------------
+-- Count models where both x_axis and y_axis = Critical
+-----------------------------------------------------
+SELECT 
+    model,
+    y_axis, 
+    x_axis,
+    COUNT(y_axis) AS num  
+FROM ari_enterprice.weight_all_models
+WHERE y_axis = 'Critical'
+  AND x_axis = 'Critical'
+GROUP BY model, y_axis, x_axis;
