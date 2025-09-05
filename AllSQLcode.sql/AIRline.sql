@@ -9,7 +9,7 @@ from ari_enterprice.system_selected_tableau
 group by system ,selected
 
 
-select  model,x_axis,y_axis,
+select  model,
 count(
 	case when x_axis='Critical' then 1
 	else 0
@@ -20,6 +20,11 @@ count(
 	else 0
 	end )as y_axisnumber
  from ari_enterprice.weight_all_models
-  Group by model,x_axis,y_axis
+  Group by model
+  
+  select model,y_axis, x_axis,count(y_axis) as num  from  ari_enterprice.weight_all_models
+   where y_axis='Critical'
+   and  x_axis='Critical'
+    group by model, y_axis, x_axis
   
   
