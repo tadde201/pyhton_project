@@ -3,10 +3,10 @@ where site='ZAB'
 
 select * from ari_enterprice.system_selected_tableau
 select system ,
-     selected,
-     count(selected) as numberseclete 
+ sum(case  when selected='true' then 2 else 0 end)as Truth,
+ sum(case when selected='false' then 1 else 0 end) as false
 from ari_enterprice.system_selected_tableau
-group by system ,selected
+group by system 
 
 
 SELECT 
