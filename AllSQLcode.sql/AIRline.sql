@@ -9,18 +9,12 @@ from ari_enterprice.system_selected_tableau
 group by system ,selected
 
 
-select  model,
-count(
-	case when x_axis='Critical' then 1
-	else 0
-	end )as x_axisnumber
-	,
-	count
-	(case when y_axis='Critical' then 1
-	else 0
-	end )as y_axisnumber
- from ari_enterprice.weight_all_models
-  Group by model
+SELECT 
+    model,
+    SUM(CASE WHEN x_axis = 'Critical' THEN 1 ELSE 0 END) AS x_crtical,
+    SUM(CASE WHEN y_axis = 'Critical' THEN 1 ELSE 0 END) AS y_Critical
+FROM ari_enterprice.weight_all_models
+GROUP BY model;
   
   select model,y_axis, x_axis,count(y_axis) as num  from  ari_enterprice.weight_all_models
    where y_axis='Critical'
