@@ -35,6 +35,6 @@ order by count(team_name1) Desc
 
 
 select * from selfjoindata
-where team_name1='MI';
+where team_name1='CSK';
 
 
