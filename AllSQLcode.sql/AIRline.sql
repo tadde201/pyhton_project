@@ -86,4 +86,13 @@ BEGIN
     GROUP BY model, y_axis, x_axis;
 END;
 $$ LANGUAGE plpgsql;
+SELECT * FROM critical();
+
+select model,
+    y_axis,
+    Count(y_axis) as Hnumber
+      
+From ari_enterprice.weight_all_models
+	   where y_axis='High'
+	   Group by model,y_axis;
 
