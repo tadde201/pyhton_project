@@ -23,7 +23,7 @@ FROM (
     FROM ari_enterprice.system_selected_tableau 
     GROUP BY system
 ) AS t  
-WHERE t.Truth = 0
+WHERE t.Truth=0
 GROUP BY system, t.Truth, t.False;
 
 -- Check view
@@ -66,12 +66,24 @@ GROUP BY model;
 -----------------------------------------------------
 -- Count models where both x_axis and y_axis = Critical
 -----------------------------------------------------
-SELECT 
-    model,
-    y_axis, 
-    x_axis,
-    COUNT(y_axis) AS num  
-FROM ari_enterprice.weight_all_models
-WHERE y_axis = 'Critical'
-  AND x_axis = 'Critical'
-GROUP BY model, y_axis, x_axis;
+CREATE OR REPLACE FUNCTION critical()
+RETURNS TABLE (
+    model text,
+    y_axis text,
+    x_axis text,
+    num bigint
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        model,
+        y_axis, 
+        x_axis,
+        COUNT(y_axis) AS num  
+    FROM ari_enterprice.weight_all_models
+    WHERE y_axis = 'Critical'
+      AND x_axis = 'Critical'
+    GROUP BY model, y_axis, x_axis;
+END;
+$$ LANGUAGE plpgsql;
+
