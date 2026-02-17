@@ -10,7 +10,7 @@ SELECT TOP (1000) [empserial]
   create table Checks(id int primary key ,name varchar(40), age int check(age>=18))
 
 
-  Insert into Checks values(1,'Alem',23),(2,'Workua',18),
+  Insert into Checks values(1,'Alem',23),(2,'Amenen',16),
   (3,'Roman',24)
   select * from checks 
   select * from sys.all_views
