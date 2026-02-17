@@ -23,7 +23,6 @@ from person as p
 join addresss as a on p.name=a.name
 and a.state='Md'
 
-
 update person
 set salary= salary *3.6
 from person as p
