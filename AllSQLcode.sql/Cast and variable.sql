@@ -1,38 +1,112 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
-use [project1]
+USE [project1];
+GO
+
+-- Select Top Records
+SELECT TOP (1000)
+      [empserial],
+      [name],
+      [salary],
+      [address1],
+      [namesaddress]
+FROM [project1].[dbo].[emp2];
 
 
-SELECT TOP (1000) [empserial]
-      ,[name]
-      ,[salary]
-      ,[address1]
-      ,[namesaddress]
-  FROM [project1].[dbo].[emp2]
+-- Declare Variables
+DECLARE @A VARCHAR(300) = 'This Dereje from Maryland';
+DECLARE @B VARCHAR(40) = 'How are you';
 
-  
-  
-  Declare @A varchar(300)= 'This Dereje from maryland'
-  declare  @b varchar(40)='How are you'
-  select @A+' '+@b as Greating 
-  select len(@A) as Length
-  select len(@b) as Len2
+-- Concatenate Variables
+SELECT @A + ' ' + @B AS Greeting;
 
-  select cast(name as nvarchar(40))+','+ + cast(salary as  varchar(40)) as Information  from emp2
-  select concat('my name is  ' +name, ' ', salary) as info from emp2
-select convert(money,salary) as salary from emp2
-update emp2
-set salary=salary+23.556
-select * from emp2
-alter table emp2
-alter column  salary money 
+-- Length of Strings
+SELECT LEN(@A) AS Length_A;
+SELECT LEN(@B) AS Length_B;
 
-select *,max(round(salary,2)) as Roud from emp2
-group by[empserial], [name],[salary],[address1],[namesaddress],[Modfidedate]
-select CURRENT_USER 
-insert into emp2 values(23,'Amodo','2000','Canada','Toronto','06-08-2023')
-select*,IIF(salary>3000,'great','fair')as comment  from emp2
-select name,Modfidedate, max(Modfidedate) as recent_date from emp2
-group by [name],Modfidedate
-order by Modfidedate Desc
-select*, rank()over (order by salary ASC ) as ranks,IIF(salary>3000,'great','fair')as comment from emp2
-select SUBSTRING([namesaddress],10,CHARINDEX(',',[namesaddress])-1) as MM from emp2
+
+-- Combine Name and Salary
+SELECT 
+    CAST(name AS NVARCHAR(40)) + ', ' + CAST(salary AS VARCHAR(40)) AS Information
+FROM [project1].[dbo].[emp2];
+
+
+-- CONCAT Example
+SELECT 
+    CONCAT('My name is ', name, ' ', salary) AS Info
+FROM [project1].[dbo].[emp2];
+
+
+-- Convert Salary to Money
+SELECT 
+    CONVERT(MONEY, salary) AS Salary
+FROM [project1].[dbo].[emp2];
+
+
+-- Update Salary
+UPDATE [project1].[dbo].[emp2]
+SET salary = salary + 23.556;
+
+
+-- View Table
+SELECT * 
+FROM [project1].[dbo].[emp2];
+
+
+-- Alter Column Type
+ALTER TABLE [project1].[dbo].[emp2]
+ALTER COLUMN salary MONEY;
+
+
+-- Round Salary
+SELECT 
+    *,
+    MAX(ROUND(salary, 2)) AS RoundedSalary
+FROM [project1].[dbo].[emp2]
+GROUP BY 
+    [empserial], 
+    [name], 
+    [salary], 
+    [address1], 
+    [namesaddress], 
+    [Modfidedate];
+
+
+-- Current User
+SELECT CURRENT_USER;
+
+
+-- Insert Record
+INSERT INTO [project1].[dbo].[emp2]
+VALUES (23, 'Amodo', '2000', 'Canada', 'Toronto', '2023-06-08');
+
+
+-- Conditional Comment
+SELECT 
+    *,
+    IIF(salary > 3000, 'Great', 'Fair') AS Comment
+FROM [project1].[dbo].[emp2];
+
+
+-- Latest Modified Date
+SELECT 
+    name,
+    Modfidedate,
+    MAX(Modfidedate) AS Recent_Date
+FROM [project1].[dbo].[emp2]
+GROUP BY 
+    name, 
+    Modfidedate
+ORDER BY Modfidedate DESC;
+
+
+-- Rank Employees by Salary
+SELECT 
+    *,
+    RANK() OVER (ORDER BY salary ASC) AS Salary_Rank,
+    IIF(salary > 3000, 'Great', 'Fair') AS Comment
+FROM [project1].[dbo].[emp2];
+
+
+-- Extract Part of Address
+SELECT 
+    SUBSTRING([namesaddress], 10, CHARINDEX(',', [namesaddress]) - 1) AS Extracted_Value
+FROM [project1].[dbo].[emp2];
