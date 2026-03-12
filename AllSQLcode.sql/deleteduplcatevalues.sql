@@ -1,25 +1,43 @@
+-- Delete records from test23
+DELETE FROM test23
+WHERE id IN (
+    SELECT id
+    FROM (
+        SELECT *
+        FROM (
+            SELECT 
+                id,
+                name,
+                COUNT(0) AS n
+            FROM test23
+            GROUP BY id, name
+        ) AS d1
+        WHERE d1.n >= 1
+    ) AS d2
+);
 
 
-delete from test23
-where id in(
-    select id
-from(
-    select *
-    from(
-select id,name, count(0) as n from test23
-group by id,name ) as d1
-where d1.n>=1
-) as d2
+-- View data
+SELECT *
+FROM test2;
+
+
+-- Delete duplicate ages from test2
+DELETE FROM test2
+WHERE age IN (
+    SELECT age
+    FROM (
+        SELECT 
+            *,
+            ROW_NUMBER() OVER (PARTITION BY age ORDER BY age) AS row_number
+        FROM test2
+    ) AS d1
+    WHERE d1.row_number > 1
+);
+--Or using Ro
+WITH cte AS (
+    SELECT *,
+           ROW_NUMBER() OVER(PARTITION BY age ORDER BY id) AS rn
+    FROM test2
 )
-
-select * from test2
-
-delete from test2
-where age in(
-select age
-from(
-    select *, row_number() over(partition by age)as row_number
-from test2
-) AS d1
-WHERE d1.row_number>1
-)
+DELETE FROM cte
