@@ -1,9 +1,11 @@
+-- Task: Generate all possible combinations of matches
 
--- Task : Generate all possible combination of Matches.
+-- Step 1: Create table
 CREATE TABLE ipl_team (
     team_name VARCHAR(10)
 );
 
+-- Step 2: Insert teams
 INSERT INTO ipl_team (team_name) VALUES
 ('MI'),
 ('CSK'),
@@ -12,29 +14,52 @@ INSERT INTO ipl_team (team_name) VALUES
 ('RR'),
 ('DC');
 
-select * 
-from ipl_team  as t1
-    Join ipl_team  as t2
-on t1.team_name<t2.team_name
+-- Step 3: View teams
+SELECT *
+FROM ipl_team;
 
-Create table Selfjoindata
-( team_name1 varchar(10),
- team_name2 varchar(10)
+
+-- Step 4: Generate all match combinations (Self Join)
+SELECT
+    t1.team_name AS team_name1,
+    t2.team_name AS team_name2
+FROM ipl_team AS t1
+JOIN ipl_team AS t2
+    ON t1.team_name < t2.team_name;
+
+
+-- Step 5: Create table to store match combinations
+CREATE TABLE Selfjoindata (
+    team_name1 VARCHAR(10),
+    team_name2 VARCHAR(10)
 );
-INSERT INTO Selfjoindata (team_name1,team_name2)
-select * 
-from ipl_team  as t1
-    Join ipl_team  as t2
-on t1.team_name<t2.team_name
-select * from Selfjoindata;
-
-Select team_name1,count(team_name1) as numOccurence 
-from Selfjoindata
-Group by team_name1
-order by count(team_name1) Desc
 
 
-select * from selfjoindata
-where team_name1='CSK';
+-- Step 6: Insert match combinations into table
+INSERT INTO Selfjoindata (team_name1, team_name2)
+SELECT
+    t1.team_name,
+    t2.team_name
+FROM ipl_team AS t1
+JOIN ipl_team AS t2
+    ON t1.team_name < t2.team_name;
 
 
+-- Step 7: View stored combinations
+SELECT *
+FROM Selfjoindata;
+
+
+-- Step 8: Count how many matches each team appears in
+SELECT
+    team_name1,
+    COUNT(team_name1) AS numOccurrence
+FROM Selfjoindata
+GROUP BY team_name1
+ORDER BY COUNT(team_name1) DESC;
+
+
+-- Step 9: Check matches for a specific team
+SELECT *
+FROM Selfjoindata
+WHERE team_name1 = 'CSK';
