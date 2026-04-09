@@ -17,10 +17,12 @@ SELECT TOP (1000) [empserial]
   select * from sys.tables
   select count(*) from sys.tables
   select * from sys.views
+  
   Declare @vairable table([empserial] int,
       [name] varchar(40),
       [salary] int,
       [address1] varchar(50))
-	  insert into @vairable values(123,'Tadey',4567,'407 mercury drive')
+
+	  insert into @vairable values(123,'Tadey','Debrbrann')
 	  select * from  @vairable
  
