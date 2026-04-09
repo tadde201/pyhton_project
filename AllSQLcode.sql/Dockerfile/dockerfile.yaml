@@ -1,3 +1,61 @@
  mkdir dockerfile
  cd dcokerfile
- 
+ # Check Docker version
+docker --version
+
+# List running containers
+docker ps
+
+# List all containers
+docker ps -a
+
+# List images
+docker images
+
+
+# Pull image
+docker pull nginx
+docker pull postgres
+
+# Build image from Dockerfile
+docker build -t myapp .
+
+# Remove image
+docker rmi nginx
+# Run container in background
+docker run -d -p 8080:80 nginx
+
+# Run with name
+docker run --name my-nginx -d nginx
+
+# Stop / Start / Restart
+docker stop my-nginx
+docker start my-nginx
+docker restart my-nginx
+
+# Remove container
+docker rm my-nginx
+docker rm -f my-nginx
+# View logs
+docker logs my-nginx
+
+# Follow live logs
+docker logs -f my-nginx
+
+# Enter container terminal
+docker exec -it my-nginx bash
+
+# Start all services
+docker compose up -d
+
+# Stop all services
+docker compose down
+
+
+# the most inmortant command
+docker ps
+docker run
+docker exec
+docker logs
+docker build
+docker compose up
