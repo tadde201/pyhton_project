@@ -1,0 +1,750 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Arial&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#fdfcf9;
+    --panel:#ffffff;
+    --border:#e6e2d8;
+    --muted:#7a7568;
+    --signal:#2f6f5e;
+    --signal-dim:#e4efec;
+    --warn:#c17817;
+    --warn-dim:#f8ecdb;
+    --danger:#b3432f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .app{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    min-height:100vh;
+  }
+  @media (max-width: 920px){
+    .app{grid-template-columns:1fr;}
+  }
+  .editor{
+    padding:32px 28px 80px;
+    border-right:1px solid var(--border);
+  }
+  .preview-col{
+    padding:28px;
+    background:#f6f4ee;
+    position:relative;
+  }
+  .preview-sticky{
+    position:sticky;
+    top:28px;
+  }
+  h1.brand{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .tagline{
+    color:var(--muted);
+    font-size:13px;
+    margin:0 0 28px;
+  }
+  .section{
+    margin-bottom:26px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--border);
+  }
+  .section:last-of-type{border-bottom:none;}
+  .section-title{
+    font-family:'Fraunces',serif;
+    font-size:14px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--signal);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--muted);
+    margin-bottom:4px;
+    margin-top:10px;
+  }
+  label:first-child{margin-top:0;}
+  input[type=text], input[type=email], input[type=tel], textarea{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    padding:8px 10px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--panel);
+    color:var(--ink);
+    resize:vertical;
+  }
+  input:focus, textarea:focus{
+    outline:2px solid var(--signal);
+    outline-offset:1px;
+    border-color:var(--signal);
+  }
+  textarea.bullets{min-height:70px;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 10px;}
+  .entry{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:14px 14px 6px;
+    margin-bottom:12px;
+    background:var(--panel);
+    position:relative;
+  }
+  .entry-remove{
+    position:absolute; top:10px; right:10px;
+    background:none; border:none; color:var(--muted);
+    font-size:12px; cursor:pointer; font-family:'Inter';
+  }
+  .entry-remove:hover{color:var(--danger);}
+  .add-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--signal-dim); color:var(--signal);
+    border:1px dashed var(--signal);
+    font-family:'Inter'; font-weight:600; font-size:12.5px;
+    padding:8px 12px; border-radius:6px; cursor:pointer;
+    margin-top:4px;
+  }
+  .add-btn:hover{background:#d8ebe5;}
+  .row-inline{display:flex; align-items:center; gap:8px; margin-top:10px;}
+  .row-inline label{margin:0;}
+
+  .jd-box textarea{min-height:140px;}
+  .tailor-btn{
+    width:100%;
+    margin-top:12px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:8px;
+    padding:12px 16px;
+    font-family:'Inter'; font-weight:600; font-size:14px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .tailor-btn:hover{background:#333;}
+  .tailor-btn:disabled{opacity:0.6; cursor:default;}
+  .status-line{font-size:12px; color:var(--muted); margin-top:8px; min-height:16px;}
+  .status-line.error{color:var(--danger);}
+  .status-line.ok{color:var(--signal);}
+
+  /* Match meter */
+  .meter-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:16px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+  }
+  .gauge{flex-shrink:0;}
+  .meter-info{flex:1; min-width:0;}
+  .meter-info .label{font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); font-weight:700; margin-bottom:4px;}
+  .meter-info .big{font-family:'Fraunces',serif; font-size:20px; font-weight:700;}
+  .kw-chips{margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;}
+  .chip{
+    font-size:11px; padding:3px 8px; border-radius:999px;
+    background:var(--warn-dim); color:var(--warn); font-weight:600;
+    border:1px solid #ecd8b3;
+  }
+  .chip.matched{background:var(--signal-dim); color:var(--signal); border-color:#cde5dd;}
+
+  .actions-row{display:flex; gap:8px; margin-bottom:14px;}
+  .ghost-btn{
+    flex:1;
+    background:var(--panel); color:var(--ink);
+    border:1px solid var(--border); border-radius:8px;
+    padding:9px 10px; font-family:'Inter'; font-weight:600; font-size:12.5px;
+    cursor:pointer;
+  }
+  .ghost-btn:hover{border-color:var(--signal); color:var(--signal);}
+
+  /* Resume preview - deliberately plain / ATS safe */
+  .resume-paper{
+    background:#ffffff;
+    color:#000000;
+    font-family:Arial, Helvetica, sans-serif;
+    padding:40px 44px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.08);
+    min-height:400px;
+    font-size:12.5px;
+    line-height:1.5;
+  }
+  .r-name{font-size:22px; font-weight:700; margin:0 0 4px;}
+  .r-contact{font-size:11.5px; color:#333; margin-bottom:14px;}
+  .r-section-title{
+    font-size:12.5px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.04em; border-bottom:1.4px solid #000;
+    padding-bottom:2px; margin:16px 0 8px;
+  }
+  .r-section-title:first-of-type{margin-top:0;}
+  .r-summary{margin:0 0 4px;}
+  .r-entry{margin-bottom:10px;}
+  .r-entry-head{display:flex; justify-content:space-between; font-weight:700; font-size:12.5px;}
+  .r-entry-sub{display:flex; justify-content:space-between; font-style:italic; font-size:11.5px; color:#222; margin-bottom:3px;}
+  .r-bullets{margin:0; padding-left:16px;}
+  .r-bullets li{margin-bottom:2px;}
+  .r-skills{margin:0;}
+  .empty-hint{color:#999; font-style:italic;}
+
+  .letter-card{margin-top:22px;}
+  .card-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .card-header .section-title{margin:0;}
+  .letter-actions{display:flex; gap:8px;}
+  .letter-actions .ghost-btn{flex:none; padding:6px 10px; font-size:11.5px;}
+  .letter-paper{
+    width:100%;
+    background:#ffffff;
+    color:#000000;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12.5px;
+    line-height:1.6;
+    padding:40px 44px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.08);
+    border:none;
+    min-height:300px;
+    resize:vertical;
+  }
+  .letter-paper::placeholder{color:#999; font-style:italic;}
+
+  @media print{
+    body *{visibility:hidden;}
+    body.print-resume .resume-paper, body.print-resume .resume-paper *{visibility:visible;}
+    body.print-resume .resume-paper{position:absolute; top:0; left:0; box-shadow:none; width:100%;}
+    body.print-letter .letter-paper, body.print-letter .letter-paper{visibility:visible;}
+    body.print-letter .letter-paper{position:absolute; top:0; left:0; box-shadow:none; width:100%; color:#000;}
+  }
+</style>
+
+<div class="app">
+  <div class="editor">
+    <h1 class="brand">dara.Resumebullder</h1>
+    <p class="tagline">Build your resume once. Tailor it — and your cover letter — to every job.</p>
+
+    <div class="section">
+      <div class="section-title">Contact</div>
+      <label>Full name</label>
+      <input type="text" id="f-name" placeholder="Jordan Rivera">
+      <div class="grid2">
+        <div><label>Email</label><input type="email" id="f-email" placeholder="jordan@email.com"></div>
+        <div><label>Phone</label><input type="tel" id="f-phone" placeholder="(555) 123-4567"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Location</label><input type="text" id="f-location" placeholder="Baltimore, MD"></div>
+        <div><label>LinkedIn / Portfolio</label><input type="text" id="f-linkedin" placeholder="linkedin.com/in/jordan"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Professional summary</div>
+      <textarea id="f-summary" rows="3" placeholder="2-3 sentences on who you are and what you bring."></textarea>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Work experience</div>
+      <div id="experience-list"></div>
+      <button class="add-btn" id="add-experience">+ Add work experience</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div id="education-list"></div>
+      <button class="add-btn" id="add-education">+ Add education</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Skills</div>
+      <label>Comma-separated</label>
+      <input type="text" id="f-skills" placeholder="Python, SQL, Project Management, Figma">
+    </div>
+
+    <div class="section jd-box">
+      <div class="section-title">Target job description</div>
+      <label>Paste the job posting you're applying to</label>
+      <textarea id="f-jd" placeholder="Paste the full job description here..."></textarea>
+      <label>Anything specific to mention in a cover letter? (optional)</label>
+      <textarea id="f-notes" rows="2" placeholder="e.g. referred by a current employee, particularly excited about their mission, relocating to the area..."></textarea>
+      <button class="tailor-btn" id="tailor-btn">Tailor resume to this job →</button>
+      <div class="status-line" id="status-line"></div>
+      <button class="tailor-btn" id="letter-btn" style="margin-top:10px; background:var(--signal);">Generate cover letter →</button>
+      <div class="status-line" id="letter-status-line"></div>
+    </div>
+  </div>
+
+  <div class="preview-col">
+    <div class="preview-sticky">
+      <div class="meter-card">
+        <div class="gauge" id="gauge-wrap"></div>
+        <div class="meter-info">
+          <div class="label">Keyword match</div>
+          <div class="big" id="match-pct">0%</div>
+          <div class="kw-chips" id="kw-chips"></div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button class="ghost-btn" id="copy-btn">Copy resume text</button>
+        <button class="ghost-btn" id="print-btn">Print / Save as PDF</button>
+      </div>
+
+      <div class="resume-paper" id="resume-preview"></div>
+
+      <div class="letter-card">
+        <div class="card-header">
+          <div class="section-title" style="color:var(--ink);">Cover letter</div>
+          <div class="letter-actions">
+            <button class="ghost-btn" id="copy-letter-btn">Copy</button>
+            <button class="ghost-btn" id="print-letter-btn">Print / Save as PDF</button>
+          </div>
+        </div>
+        <textarea class="letter-paper" id="letter-preview" placeholder="Click &quot;Generate cover letter&quot; on the left once your resume and job description are filled in."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STOPWORDS = new Set(("a about above after again against all am an and any are aren't as at be because been before being below between both but by can't cannot could couldn't did didn't do does doesn't doing don't down during each few for from further had hadn't has hasn't have haven't having he he'd he'll he's her here here's hers herself him himself his how how's i i'd i'll i'm i've if in into is isn't it it's its itself let's me more most mustn't my myself no nor not of off on once only or other ought our ours ourselves out over own same shan't she she'd she'll she's should shouldn't so some such than that that's the their theirs them themselves then there there's these they they'd they'll they're they've this those through to too under until up very was wasn't we we'd we'll we're we've were weren't what what's when when's where where's which while who who's whom why why's with won't would wouldn't you you'd you'll you're you've your yours yourself yourselves will strong ability experience work team years using across using including etc must plus role work looking seeking join us we're we are you'll you'd").split(/\s+/));
+
+let resumeData = {
+  experience: [],
+  education: []
+};
+let expCounter = 0;
+let eduCounter = 0;
+
+function uid(prefix){ return prefix + '_' + (Date.now()) + '_' + Math.floor(Math.random()*10000); }
+
+function addExperience(data){
+  data = data || {id: uid('exp'), title:'', company:'', location:'', start:'', end:'', current:false, bullets:''};
+  resumeData.experience.push(data);
+  renderExperienceList();
+  updatePreview();
+}
+
+function addEducation(data){
+  data = data || {id: uid('edu'), school:'', degree:'', field:'', start:'', end:''};
+  resumeData.education.push(data);
+  renderEducationList();
+  updatePreview();
+}
+
+function removeExperience(id){
+  resumeData.experience = resumeData.experience.filter(e => e.id !== id);
+  renderExperienceList();
+  updatePreview();
+}
+function removeEducation(id){
+  resumeData.education = resumeData.education.filter(e => e.id !== id);
+  renderEducationList();
+  updatePreview();
+}
+
+function renderExperienceList(){
+  const container = document.getElementById('experience-list');
+  container.innerHTML = '';
+  resumeData.experience.forEach((exp) => {
+    const el = document.createElement('div');
+    el.className = 'entry';
+    el.innerHTML = `
+      <button class="entry-remove" data-id="${exp.id}" data-type="exp">Remove ✕</button>
+      <label>Job title</label>
+      <input type="text" data-field="title" placeholder="Marketing Manager" value="${escapeAttr(exp.title)}">
+      <div class="grid2">
+        <div><label>Company</label><input type="text" data-field="company" placeholder="Acme Co." value="${escapeAttr(exp.company)}"></div>
+        <div><label>Location</label><input type="text" data-field="location" placeholder="Remote" value="${escapeAttr(exp.location)}"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Start date</label><input type="text" data-field="start" placeholder="Jan 2022" value="${escapeAttr(exp.start)}"></div>
+        <div><label>End date</label><input type="text" data-field="end" placeholder="Present" value="${escapeAttr(exp.end)}"></div>
+      </div>
+      <label>Key achievements (one per line)</label>
+      <textarea class="bullets" data-field="bullets" placeholder="Led a team of 5 to launch...
+Increased conversion by 18% by...">${escapeHtml(exp.bullets)}</textarea>
+    `;
+    container.appendChild(el);
+    el.querySelectorAll('input, textarea').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const field = e.target.getAttribute('data-field');
+        exp[field] = e.target.value;
+        updatePreview();
+      });
+    });
+  });
+  container.querySelectorAll('.entry-remove[data-type="exp"]').forEach(btn => {
+    btn.addEventListener('click', () => removeExperience(btn.getAttribute('data-id')));
+  });
+}
+
+function renderEducationList(){
+  const container = document.getElementById('education-list');
+  container.innerHTML = '';
+  resumeData.education.forEach((edu) => {
+    const el = document.createElement('div');
+    el.className = 'entry';
+    el.innerHTML = `
+      <button class="entry-remove" data-id="${edu.id}" data-type="edu">Remove ✕</button>
+      <label>School</label>
+      <input type="text" data-field="school" placeholder="State University" value="${escapeAttr(edu.school)}">
+      <div class="grid2">
+        <div><label>Degree</label><input type="text" data-field="degree" placeholder="B.A." value="${escapeAttr(edu.degree)}"></div>
+        <div><label>Field of study</label><input type="text" data-field="field" placeholder="Communications" value="${escapeAttr(edu.field)}"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Start date</label><input type="text" data-field="start" placeholder="2016" value="${escapeAttr(edu.start)}"></div>
+        <div><label>End date</label><input type="text" data-field="end" placeholder="2020" value="${escapeAttr(edu.end)}"></div>
+      </div>
+    `;
+    container.appendChild(el);
+    el.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const field = e.target.getAttribute('data-field');
+        edu[field] = e.target.value;
+        updatePreview();
+      });
+    });
+  });
+  container.querySelectorAll('.entry-remove[data-type="edu"]').forEach(btn => {
+    btn.addEventListener('click', () => removeEducation(btn.getAttribute('data-id')));
+  });
+}
+
+function escapeHtml(str){
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escapeAttr(str){
+  return escapeHtml(str).replace(/"/g,'&quot;');
+}
+
+function getFieldValues(){
+  return {
+    name: document.getElementById('f-name').value,
+    email: document.getElementById('f-email').value,
+    phone: document.getElementById('f-phone').value,
+    location: document.getElementById('f-location').value,
+    linkedin: document.getElementById('f-linkedin').value,
+    summary: document.getElementById('f-summary').value,
+    skills: document.getElementById('f-skills').value,
+  };
+}
+
+function buildResumeText(){
+  const f = getFieldValues();
+  let text = `${f.name}\n${[f.email, f.phone, f.location, f.linkedin].filter(Boolean).join(' | ')}\n\n`;
+  if(f.summary) text += `SUMMARY\n${f.summary}\n\n`;
+  if(resumeData.experience.length){
+    text += 'EXPERIENCE\n';
+    resumeData.experience.forEach(e => {
+      text += `${e.title} — ${e.company} (${e.location})\n${e.start} - ${e.end}\n`;
+      (e.bullets||'').split('\n').filter(Boolean).forEach(b => text += `- ${b}\n`);
+      text += '\n';
+    });
+  }
+  if(resumeData.education.length){
+    text += 'EDUCATION\n';
+    resumeData.education.forEach(e => {
+      text += `${e.degree}${e.field ? ', ' + e.field : ''} — ${e.school} (${e.start} - ${e.end})\n`;
+    });
+    text += '\n';
+  }
+  if(f.skills) text += `SKILLS\n${f.skills}\n`;
+  return text;
+}
+
+function updatePreview(){
+  const f = getFieldValues();
+  const preview = document.getElementById('resume-preview');
+  let html = '';
+  html += `<div class="r-name">${escapeHtml(f.name) || '<span class="empty-hint">Your name</span>'}</div>`;
+  const contactParts = [f.email, f.phone, f.location, f.linkedin].filter(Boolean).map(escapeHtml);
+  html += `<div class="r-contact">${contactParts.join(' &nbsp;|&nbsp; ') || '<span class="empty-hint">Contact details</span>'}</div>`;
+
+  if(f.summary){
+    html += `<div class="r-section-title">Summary</div><p class="r-summary">${escapeHtml(f.summary)}</p>`;
+  }
+
+  if(resumeData.experience.length){
+    html += `<div class="r-section-title">Experience</div>`;
+    resumeData.experience.forEach(e => {
+      html += `<div class="r-entry">
+        <div class="r-entry-head"><span>${escapeHtml(e.title)||'Job title'}</span><span>${escapeHtml(e.start)}${e.start||e.end?' – ':''}${escapeHtml(e.end)}</span></div>
+        <div class="r-entry-sub"><span>${escapeHtml(e.company)||'Company'}</span><span>${escapeHtml(e.location)}</span></div>
+        <ul class="r-bullets">${(e.bullets||'').split('\n').filter(Boolean).map(b=>`<li>${escapeHtml(b)}</li>`).join('')}</ul>
+      </div>`;
+    });
+  }
+
+  if(resumeData.education.length){
+    html += `<div class="r-section-title">Education</div>`;
+    resumeData.education.forEach(e => {
+      html += `<div class="r-entry">
+        <div class="r-entry-head"><span>${escapeHtml(e.degree)}${e.field?', '+escapeHtml(e.field):''}</span><span>${escapeHtml(e.start)}${e.start||e.end?' – ':''}${escapeHtml(e.end)}</span></div>
+        <div class="r-entry-sub"><span>${escapeHtml(e.school)}</span><span></span></div>
+      </div>`;
+    });
+  }
+
+  if(f.skills){
+    html += `<div class="r-section-title">Skills</div><p class="r-skills">${escapeHtml(f.skills)}</p>`;
+  }
+
+  preview.innerHTML = html;
+  updateMatchMeter();
+}
+
+function extractKeywords(text, topN){
+  const freq = {};
+  const words = (text.toLowerCase().match(/[a-z][a-z0-9+.#-]{2,}/g) || []);
+  words.forEach(w => {
+    if(STOPWORDS.has(w)) return;
+    freq[w] = (freq[w]||0) + 1;
+  });
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0, topN).map(x=>x[0]);
+}
+
+function drawGauge(pct){
+  const r = 30, c = 2*Math.PI*r;
+  const offset = c - (pct/100)*c;
+  const color = pct >= 60 ? 'var(--signal)' : (pct >= 35 ? 'var(--warn)' : 'var(--danger)');
+  document.getElementById('gauge-wrap').innerHTML = `
+    <svg width="76" height="76" viewBox="0 0 76 76">
+      <circle cx="38" cy="38" r="${r}" fill="none" stroke="#eee" stroke-width="8"/>
+      <circle cx="38" cy="38" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+        stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"
+        transform="rotate(-90 38 38)"/>
+      <text x="38" y="43" text-anchor="middle" font-family="Fraunces, serif" font-size="16" font-weight="700" fill="${color}">${pct}%</text>
+    </svg>
+  `;
+}
+
+function updateMatchMeter(){
+  const jd = document.getElementById('f-jd').value;
+  const chipsEl = document.getElementById('kw-chips');
+  const pctEl = document.getElementById('match-pct');
+  if(!jd.trim()){
+    drawGauge(0);
+    pctEl.textContent = 'Paste a job description';
+    chipsEl.innerHTML = '';
+    return;
+  }
+  const resumeText = buildResumeText().toLowerCase();
+  const keywords = extractKeywords(jd, 18);
+  const matched = keywords.filter(k => resumeText.includes(k));
+  const pct = keywords.length ? Math.round((matched.length/keywords.length)*100) : 0;
+  drawGauge(pct);
+  pctEl.textContent = pct + '% of top JD keywords found';
+  chipsEl.innerHTML = keywords.map(k => {
+    const isMatch = resumeText.includes(k);
+    return `<span class="chip ${isMatch?'matched':''}">${isMatch?'✓ ':''}${escapeHtml(k)}</span>`;
+  }).join('');
+}
+
+function setStatus(msg, type){
+  const el = document.getElementById('status-line');
+  el.textContent = msg;
+  el.className = 'status-line' + (type ? ' ' + type : '');
+}
+
+async function tailorResume(){
+  const jd = document.getElementById('f-jd').value.trim();
+  if(!jd){
+    setStatus('Paste a job description first.', 'error');
+    return;
+  }
+  const f = getFieldValues();
+  if(!f.summary && resumeData.experience.length === 0){
+    setStatus('Add a summary or at least one experience entry first.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('tailor-btn');
+  btn.disabled = true;
+  btn.textContent = 'Tailoring…';
+  setStatus('Asking AI to tailor your resume to this job…');
+
+  const payload = {
+    summary: f.summary,
+    skills: f.skills,
+    experience: resumeData.experience.map(e => ({id: e.id, title: e.title, company: e.company, bullets: (e.bullets||'').split('\n').filter(Boolean)}))
+  };
+
+  const systemInstructions = `You are an expert resume writer and ATS optimization specialist. You will be given a candidate's existing resume content (as JSON) and a target job description. Rewrite the content to better align with the job description while staying strictly truthful to the candidate's real experience — never invent employers, titles, dates, or accomplishments that aren't implied by the original bullets.
+
+Your job:
+- Rewrite "summary" into a punchy 2-3 sentence professional summary tailored to this role, naturally incorporating relevant keywords/skills from the job description.
+- For each experience entry, rewrite its "bullets" array to emphasize relevant, transferable achievements, use strong action verbs, quantify impact where the original implies numbers, and weave in relevant keywords from the job description WITHOUT fabricating facts. Keep the same number of bullets or fewer, never fabricate new ones out of nothing.
+- Rewrite "skills" as a comma-separated string, reordering/adding only skills reasonably implied by the existing content and the job description, prioritizing the most relevant to the JD first.
+
+Respond with ONLY valid JSON, no markdown fences, no preamble, matching exactly this schema:
+{"summary": "string", "skills": "string", "experience": [{"id": "string", "bullets": ["string", ...]}]}
+
+The "id" fields in your response must exactly match the ids given in the input, one object per input experience entry, in the same order.`;
+
+  const userMessage = `JOB DESCRIPTION:\n${jd}\n\nCANDIDATE RESUME CONTENT (JSON):\n${JSON.stringify(payload)}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1800,
+        system: systemInstructions,
+        messages: [{ role: "user", content: userMessage }]
+      })
+    });
+
+    if(!response.ok){
+      throw new Error('API request failed with status ' + response.status);
+    }
+
+    const data = await response.json();
+    const textBlock = (data.content || []).map(b => b.text || '').join('\n').trim();
+    const cleaned = textBlock.replace(/^```json\s*/i, '').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+    const parsed = JSON.parse(cleaned);
+
+    if(typeof parsed.summary === 'string'){
+      document.getElementById('f-summary').value = parsed.summary;
+    }
+    if(typeof parsed.skills === 'string'){
+      document.getElementById('f-skills').value = parsed.skills;
+    }
+    if(Array.isArray(parsed.experience)){
+      parsed.experience.forEach(pe => {
+        const match = resumeData.experience.find(e => e.id === pe.id);
+        if(match && Array.isArray(pe.bullets)){
+          match.bullets = pe.bullets.join('\n');
+        }
+      });
+      renderExperienceList();
+    }
+
+    updatePreview();
+    setStatus('Done — summary, skills, and bullet points tailored to this job. Review before sending!', 'ok');
+  } catch (err){
+    console.error(err);
+    setStatus('Something went wrong tailoring your resume. Please try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Tailor resume to this job →';
+  }
+}
+
+function setLetterStatus(msg, type){
+  const el = document.getElementById('letter-status-line');
+  el.textContent = msg;
+  el.className = 'status-line' + (type ? ' ' + type : '');
+}
+
+async function generateCoverLetter(){
+  const jd = document.getElementById('f-jd').value.trim();
+  if(!jd){
+    setLetterStatus('Paste a job description first.', 'error');
+    return;
+  }
+  const f = getFieldValues();
+  if(!f.name || (!f.summary && resumeData.experience.length === 0)){
+    setLetterStatus('Fill in your name and at least a summary or one experience entry first.', 'error');
+    return;
+  }
+  const notes = document.getElementById('f-notes').value.trim();
+
+  const btn = document.getElementById('letter-btn');
+  btn.disabled = true;
+  btn.textContent = 'Writing…';
+  setLetterStatus('Drafting a tailored cover letter…');
+
+  const resumeSnapshot = buildResumeText();
+
+  const systemInstructions = `You are an expert cover letter writer. Write a concise, genuine, non-generic cover letter (roughly 250-350 words) for the candidate, tailored specifically to the job description provided. Use only facts present in the candidate's resume content — never invent employers, titles, or accomplishments. Reference 2-3 concrete, relevant points from their actual experience that connect to what the job needs. Avoid cliches like "I am writing to express my interest" and generic filler. Use a natural, confident, professional tone. Address it "Dear Hiring Manager," unless a company or contact name is clearly present in the job description. Sign off with the candidate's name. If the candidate provided additional notes to mention, weave them in naturally where relevant. Output ONLY the plain text of the letter, no markdown, no headers, no commentary before or after.`;
+
+  const userMessage = `JOB DESCRIPTION:\n${jd}\n\nCANDIDATE RESUME:\n${resumeSnapshot}\n\nADDITIONAL NOTES FROM CANDIDATE (optional, may be empty):\n${notes}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemInstructions,
+        messages: [{ role: "user", content: userMessage }]
+      })
+    });
+
+    if(!response.ok){
+      throw new Error('API request failed with status ' + response.status);
+    }
+
+    const data = await response.json();
+    const letterText = (data.content || []).map(b => b.text || '').join('\n').trim();
+    document.getElementById('letter-preview').value = letterText;
+    setLetterStatus('Done — review and personalize before sending!', 'ok');
+  } catch(err){
+    console.error(err);
+    setLetterStatus('Something went wrong generating the letter. Please try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generate cover letter →';
+  }
+}
+
+function printWithTarget(targetClass){
+  document.body.classList.add(targetClass);
+  window.print();
+}
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('print-resume', 'print-letter');
+});
+
+// wire up static fields
+['f-name','f-email','f-phone','f-location','f-linkedin','f-summary','f-skills'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePreview);
+});
+document.getElementById('f-jd').addEventListener('input', updateMatchMeter);
+document.getElementById('add-experience').addEventListener('click', () => addExperience());
+document.getElementById('add-education').addEventListener('click', () => addEducation());
+document.getElementById('tailor-btn').addEventListener('click', tailorResume);
+document.getElementById('letter-btn').addEventListener('click', generateCoverLetter);
+document.getElementById('print-btn').addEventListener('click', () => printWithTarget('print-resume'));
+document.getElementById('print-letter-btn').addEventListener('click', () => printWithTarget('print-letter'));
+document.getElementById('copy-btn').addEventListener('click', () => {
+  const text = buildResumeText();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const old = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = old, 1500);
+  });
+});
+document.getElementById('copy-letter-btn').addEventListener('click', () => {
+  const text = document.getElementById('letter-preview').value;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-letter-btn');
+    const old = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = old, 1500);
+  });
+});
+
+// seed with one empty experience + education entry
+addExperience();
+addEducation();
+updatePreview();
+</script>
